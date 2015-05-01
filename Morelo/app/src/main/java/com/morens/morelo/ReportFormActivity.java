@@ -37,7 +37,7 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
     // array list for spinner adapter
     private ArrayList<Category> categoriesList;
     ProgressDialog pDialog;
-
+     Button ReportButton;
     // API urls
 
     // Url to create new category
@@ -58,6 +58,14 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
 
         // spinner item select listener
         spinnerFood.setOnItemSelectedListener(this);
+
+        ReportButton = (Button) findViewById(R.id.send_report);
+        ReportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent sendreport = new Intent(ReportFormActivity.this);
+            }
+        });
 
         // Add new category click event
         btnAddNewCategory.setOnClickListener(new View.OnClickListener() {
