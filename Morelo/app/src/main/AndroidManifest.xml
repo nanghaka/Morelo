@@ -32,6 +32,10 @@
         android:name=".MainActivity"
         android:label="@string/app_name"
         android:launchMode="singleTop" />
+
+        <activity android:name=".ReportFormActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop" />
     </application>
 
 

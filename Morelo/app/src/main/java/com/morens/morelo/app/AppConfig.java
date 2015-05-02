@@ -5,5 +5,8 @@ public class AppConfig {
 	public static String URL_LOGIN = "http://planetweneed.org/morelo/mobile/";
 
 	// Server user register url
-	public static String URL_REGISTER = "http://planetweneed.org/morelo/mobile//";
+	public static String URL_REGISTER = "http://planetweneed.org/morelo/mobile/";
+
+	// Server police message
+	public static  String URL_REPORT = "http://planetweneed.org/morelo/mobile/";
 }

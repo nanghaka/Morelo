@@ -43,16 +43,16 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
     // Url to create new category
     private String URL_NEW_CATEGORY = "http://10.0.2.2/morelo/new_category.php";
     // Url to get all categories
-    private String URL_CATEGORIES = "http://10.0.2.2/morelo/get_categories.php";
+    private String URL_CATEGORIES = "http://planetweneed.org/morelo/mobile/get_categories.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reportform_layout);
 
-        btnAddNewCategory = (Button) findViewById(R.id.btnAddNewCategory);
+        //btnAddNewCategory = (Button) findViewById(R.id.btnAddNewCategory);
         spinnerFood = (Spinner) findViewById(R.id.spinCrimes);
-        txtCategory = (TextView) findViewById(R.id.txtCategory);
+       // txtCategory = (TextView) findViewById(R.id.txtCategory);
 
         categoriesList = new ArrayList<Category>();
 
