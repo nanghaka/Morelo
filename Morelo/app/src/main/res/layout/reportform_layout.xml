@@ -11,7 +11,9 @@
 
     <!--<EditText android:id="@+id/txtCategory"-->
         <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"/>-->
+        <!--android:layout_height="wrap_content"-->
+
+        <!--/>-->
 
     <!--<Button android:id="@+id/btnAddNewCategory"-->
         <!--android:text="Create"-->
