@@ -38,7 +38,7 @@ public class FinalActivity extends Activity {
 
         Toast.makeText(getApplicationContext(), "Your address is: " + address, Toast.LENGTH_SHORT).show();
 
-// make sure you close the gps after using it. Save user's battery power
+        // make sure you close the gps after using it. Save user's battery power
         mGPSService.closeGPS();
     }
 }
