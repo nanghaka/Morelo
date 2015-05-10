@@ -14,7 +14,7 @@ public class FinalActivity extends Activity {
         setContentView(R.layout.final_layout);
 
 
-                String address = "";
+        String address = "";
         GPSService mGPSService = new GPSService(FinalActivity.this);
         mGPSService.getLocation();
 
