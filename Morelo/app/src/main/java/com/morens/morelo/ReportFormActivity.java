@@ -10,9 +10,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.morens.morelo.dialog.ProgressDialogButton;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +42,9 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
     private ArrayList<Category> categoriesList;
     ProgressDialog pDialog;
      Button ReportButton;
+    double latitude;
+    double longitude;
+    String address = "";
     // API urls
 
     // Url to create new category
@@ -43,6 +52,11 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
 
     // Url to get all categories
     private String URL_CATEGORIES = "http://planetweneed.org/morelo/mobile/get_categories.php";
+
+    private String SEND_URL ="http://planetweneed.org/morelo/mobile/new_report.php";
+
+    EditText txtDesc,txtDescOffender,txtPhone;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +66,11 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
 
         //This is for the GPS Location
 
-                String address = "";
+
         GPSService mGPSService = new GPSService(ReportFormActivity.this);
         mGPSService.getLocation();
+
+        uid = getIntent().getExtras().getString("uid");
 
         if (mGPSService.isLocationAvailable == false) {
 
@@ -67,8 +83,8 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
         } else {
 
             // Getting location co-ordinates
-            double latitude = mGPSService.getLatitude();
-            double longitude = mGPSService.getLongitude();
+            latitude = mGPSService.getLatitude();
+            longitude = mGPSService.getLongitude();
             Toast.makeText(getApplicationContext(), "Latitude:" + latitude + " | Longitude: " + longitude, Toast.LENGTH_LONG).show();
 
             address = mGPSService.getLocationAddress();
@@ -82,7 +98,9 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
 
 //        btnAddNewCategory = (Button) findViewById(R.id.btnAddNewCategory);
         spinnerFood = (Spinner) findViewById(R.id.spinCrimes);
-//        txtCategory = (TextView) findViewById(R.id.txtCategory);
+        txtDesc = (EditText) findViewById(R.id.alert_Description);
+        txtDescOffender = (EditText) findViewById(R.id.alert_description_offender);
+        txtPhone = (EditText) findViewById(R.id.alert_cell);
 
         categoriesList = new ArrayList<Category>();
 
@@ -93,8 +111,8 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
         ReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent finalintent = new Intent(ReportFormActivity.this, FinalActivity.class);
-                startActivity(finalintent);
+                new SendDetails().execute();
+
             }
         });
 
@@ -290,6 +308,111 @@ public class ReportFormActivity extends Activity implements AdapterView.OnItemSe
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
     }
+
+    public class SendDetails extends AsyncTask<String, String, String>{
+
+        boolean error;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(ReportFormActivity.this);
+            pDialog.setMessage("Please wait Sending Report...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+
+        }
+
+
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            ServiceHandler jsonParser = new ServiceHandler();
+            String message = "";
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+
+            nameValuePairs.add(new BasicNameValuePair(
+                    "reporttype", spinnerFood.getSelectedItem().toString()));
+            nameValuePairs.add(new BasicNameValuePair(
+                    "reporterid", uid));
+            nameValuePairs.add(new BasicNameValuePair(
+                    "locationstreet", address));
+            nameValuePairs.add(new BasicNameValuePair(
+                    "locationlat", String.valueOf(latitude)));
+            nameValuePairs.add(new BasicNameValuePair(
+                    "locationlong", String.valueOf(longitude)));
+            nameValuePairs.add(new BasicNameValuePair(
+                    "descriptionoffender", txtDescOffender.getText().toString()));
+            nameValuePairs.add(new BasicNameValuePair(
+                    "descriptionreport", txtDesc.getText().toString()));
+            nameValuePairs.add(new BasicNameValuePair(
+                    "contactnumber", txtPhone.getText().toString()));
+
+
+
+            String json = jsonParser.makeServiceCall(SEND_URL, ServiceHandler.POST,nameValuePairs);
+
+            Log.e("Response sending: ", "> " + json);
+
+            if (json != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(json);
+                    if (jsonObj.length() != 0) {
+                        if(jsonObj.getBoolean("error")){
+                            Log.e("error",""+jsonObj.toString());
+                            message = jsonObj.getString("message");
+                            error =jsonObj.getBoolean("error");
+
+                        }else{
+                            message = jsonObj.getString("message");
+                            error =jsonObj.getBoolean("error");
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                Log.e("JSON Data error", "Didn't receive any data from server!");
+            }
+
+            return message;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
+
+               final ProgressDialogButton dialogButton = new ProgressDialogButton(ReportFormActivity.this, "Report", result);
+
+                dialogButton.show();
+                dialogButton.setOkClickedAction("OK",
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialogButton.dismiss();
+                                Intent finalintent = new Intent(ReportFormActivity.this, MainActivity.class);
+                                startActivity(finalintent);
+                                finish();
+
+                            }
+                        });
+
+
+
+        }
+    }
+
+
+
+
+
 }
 
 

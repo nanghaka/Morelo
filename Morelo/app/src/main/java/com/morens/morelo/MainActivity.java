@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
         }
 
         // Fetching user details from sqlite
-        HashMap<String, String> user = db.getUserDetails();
+        final HashMap<String, String> user = db.getUserDetails();
 
         String name = user.get("name");
         String email = user.get("email");
@@ -87,6 +87,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent reportIntent = new Intent(MainActivity.this, ReportFormActivity.class);
+                reportIntent.putExtra("uid",user.get("uid"));
                 startActivity(reportIntent);
             }
         });

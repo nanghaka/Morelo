@@ -62,6 +62,8 @@ public class ServiceHandler {
 				}
 
 				httpResponse = httpClient.execute(httpPost);
+                httpEntity = httpResponse.getEntity();
+                is = httpEntity.getContent();
 
 			} else if (method == GET) {
 				// appending params to url
@@ -73,10 +75,11 @@ public class ServiceHandler {
 				HttpGet httpGet = new HttpGet(url);
 
 				httpResponse = httpClient.execute(httpGet);
+                httpEntity = httpResponse.getEntity();
+                is = httpEntity.getContent();
 
 			}
-			httpEntity = httpResponse.getEntity();
-			is = httpEntity.getContent();
+
 
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
